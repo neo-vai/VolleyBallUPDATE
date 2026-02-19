@@ -86,8 +86,7 @@ premium_ball:
   perm: volleyball.premiumball
   lock_msg: "§cYou can't use this ball!"
 ```
-# Dependencies
-They're gone! 🥳
+
 # Adding a New Ball Skin
 The plugin uses the official Minecraft API, so you need to use official Minecraft heads. For example, you can use a site like Minecraft-Heads. In the "url" field, you need to insert the set of characters at the end of the link. For example, for the link:
 http://textures.minecraft.net/texture/93c2f1c5d2c8f0e33730c14dca1c1d1e1abd8596b0839d6738d18f46432b6fa6,
