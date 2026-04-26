@@ -1,5 +1,6 @@
 package ru.ienumerable.volleyball.tools.update;
 
+import ru.ienumerable.volleyball.FoliaUtil;
 import ru.ienumerable.volleyball.Volleyball;
 
 import java.util.ArrayList;
@@ -23,7 +24,11 @@ public class Updater {
     }
 
     public void put(Updatable updatable){
-        objects.add(updatable);
+        if (FoliaUtil.isFolia()) {
+            updatable.startTicking();
+        } else {
+            objects.add(updatable);
+        }
     }
 
     public <T extends Updatable> List<T> getAll(){
@@ -47,10 +52,13 @@ public class Updater {
 
         if(isSchedulerInitialized) throw new IllegalStateException("Scheduler is already running");
 
+        isSchedulerInitialized = true;
+
+        if(FoliaUtil.isFolia()) return;
+
         Volleyball instance = Volleyball.getInstance();
         instance.getServer().getScheduler().scheduleSyncRepeatingTask(instance, this::update, 0, 1);
 
-        isSchedulerInitialized = true;
     }
 
     private void update(){

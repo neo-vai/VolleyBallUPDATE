@@ -1,7 +1,8 @@
 name: VolleyballUPDATE
 version: '1.4'
 main: ru.ienumerable.volleyball.Volleyball
-api-version: '1.19'
+api-version: '1.20'
+folia-supported: true
 authors: [ NeoVai ]
 commands:
   ballskin:

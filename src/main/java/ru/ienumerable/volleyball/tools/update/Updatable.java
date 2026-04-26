@@ -6,4 +6,6 @@ public interface Updatable {
 
     boolean isLife();
 
+    default void startTicking() {}
+
 }
