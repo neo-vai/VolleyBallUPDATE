@@ -104,7 +104,7 @@ public class Config {
         TRANSPARENT_MATERIALS.add(Material.AIR);
         TRANSPARENT_MATERIALS.add(Material.CAVE_AIR);
         TRANSPARENT_MATERIALS.add(Material.VOID_AIR);
-        TRANSPARENT_MATERIALS.add(Material.GRASS);
+        TRANSPARENT_MATERIALS.add(Material.GRASS_BLOCK);
 
         BOUNCE_ENERGY_LOSSES.put(Material.WATER, 5D);
         BOUNCE_ENERGY_LOSSES.put(Material.SLIME_BLOCK, 1D);

@@ -2,7 +2,6 @@ package ru.ienumerable.volleyball.ball;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import ru.ienumerable.volleyball.Volleyball;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +34,10 @@ public class BallsContainer {
 
     public void dropAllBalls(){
 
-        List<Ball> balls = Volleyball.getUpdater().getAll();
+        List<Ball> allBalls = new ArrayList<>();
+        balls.values().forEach(allBalls::addAll);
 
-        if(balls == null) return;
-
-        for(Ball ball : balls){
+        for(Ball ball : allBalls){
             ball.remove(true);
         }
     }

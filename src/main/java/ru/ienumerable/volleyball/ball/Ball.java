@@ -1,5 +1,6 @@
 package ru.ienumerable.volleyball.ball;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -7,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 import ru.ienumerable.volleyball.Config;
+import ru.ienumerable.volleyball.FoliaUtil;
 import ru.ienumerable.volleyball.Volleyball;
 import ru.ienumerable.volleyball.skin.SkullSkin;
 import ru.ienumerable.volleyball.tools.math.Angle;
@@ -18,6 +20,7 @@ public class Ball implements Updatable {
     private boolean isLife = true;
     private int timer = 0;
     private boolean isTimerStarted;
+    private ScheduledTask foliaTask;
 
     private final Vector velocity;
     private EulerAngle rotation;
@@ -51,6 +54,22 @@ public class Ball implements Updatable {
     @Override
     public boolean isLife() {
         return isLife;
+    }
+
+    @Override
+    public void startTicking() {
+        foliaTask = stand.getScheduler().runAtFixedRate(
+                Volleyball.getInstance(),
+                scheduledTask -> {
+                    if (!isLife) {
+                        scheduledTask.cancel();
+                        return;
+                    }
+                    update();
+                    if (!isLife) scheduledTask.cancel();
+                },
+                null, 1L, 1L
+        );
     }
 
     @Override
@@ -90,6 +109,7 @@ public class Ball implements Updatable {
     public void remove(boolean isDrop){
 
         this.isLife = false;
+        if (FoliaUtil.isFolia() && foliaTask != null) foliaTask.cancel();
         Volleyball.getBallsContainer().removeBall(this);
         this.stand.remove();
         this.target.remove();
@@ -158,9 +178,19 @@ public class Ball implements Updatable {
     }
 
     private void processTail(){
+        Location loc = new Location(position.getWorld(), position.getX(), position.getY() - 1, position.getZ());
+
+        if (FoliaUtil.isFolia()) {
+            stand.teleportAsync(standPos);
+            stand.setHeadPose(rotation);
+            target.teleportAsync(loc);
+
+            return;
+        }
+
         stand.teleport(standPos);
         stand.setHeadPose(rotation);
-        target.teleport(new Location(position.getWorld(), position.getX(), position.getY() - 1, position.getZ()));
+        target.teleport(loc);
     }
 
     private void despawnProcess(){

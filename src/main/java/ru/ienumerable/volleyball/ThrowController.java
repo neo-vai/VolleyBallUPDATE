@@ -1,5 +1,6 @@
 package ru.ienumerable.volleyball;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -17,6 +18,7 @@ public class ThrowController implements Updatable {
     private final SkullSkin skin;
     private final Player player;
     private boolean live = true;
+    private ScheduledTask foliaTask;
 
     private int counter = 0;
     private double power = 0.0001;
@@ -60,6 +62,22 @@ public class ThrowController implements Updatable {
     }
 
     @Override
+    public void startTicking() {
+        foliaTask = player.getScheduler().runAtFixedRate(
+                Volleyball.getInstance(),
+                scheduledTask -> {
+                    if (!live) {
+                        scheduledTask.cancel();
+                        return;
+                    }
+                    update();
+                    if (!live) scheduledTask.cancel();
+                },
+                null, 1L, 1L
+        );
+    }
+
+    @Override
     public void update() {
         if (!live || !player.isSneaking() || SkullSkin.getSkin(player.getInventory().getItemInMainHand()) != skin) {
             live = false;
@@ -86,6 +104,7 @@ public class ThrowController implements Updatable {
 
     public void kill(){
         live = false;
+        if (FoliaUtil.isFolia() && foliaTask != null) foliaTask.cancel();
     }
 
     private String getBar(double power){
